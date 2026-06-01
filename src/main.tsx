@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './App';
 import { PublicPortal } from './components/PublicPortal';
+import { MobileBanner } from './components/MobileBanner';
 import { initSentry } from './services/sentry';
 import { installBrowserBridge } from './services/browserBridge';
 import './styles/global.css';
@@ -25,6 +26,13 @@ const route = getPortalRoute();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {route ? <PublicPortal slug={route.slug} token={route.token} /> : <App />}
+    {route ? (
+      <PublicPortal slug={route.slug} token={route.token} />
+    ) : (
+      <>
+        <App />
+        <MobileBanner />
+      </>
+    )}
   </React.StrictMode>
 );
