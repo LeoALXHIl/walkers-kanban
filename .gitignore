@@ -7,6 +7,10 @@ release/
 WalkersKanban-win32-x64/
 *.local
 
+# artefatos de build/deploy
+.firebase/
+tsconfig.tsbuildinfo
+
 # instaladores / binários de build — não versionar
 instalador/
 *.exe
