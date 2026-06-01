@@ -16,8 +16,8 @@
 ## Seus direitos (é só pedir)
 Você pode, a qualquer momento, pedir para: **ver**, **corrigir**, **exportar** ou **apagar** seus dados, e **revogar** permissões (como o acesso ao Google).
 
-📩 Para exercer qualquer direito: **[email do DPO]**
-🔐 Encarregado de Dados (DPO): **[NOME]**
+📩 Para exercer qualquer direito: **leoaleixohilario@gmail.com**
+🔐 Encarregado de Dados (DPO): **Leonardo Aleixo Hilario**
 
 ## Como protegemos
 - Conexão criptografada (HTTPS).

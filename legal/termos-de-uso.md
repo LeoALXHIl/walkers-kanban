@@ -1,10 +1,10 @@
 # Termos de Uso — Walkers Kanban
 
-**Última atualização:** [DATA]
+**Última atualização:** 1º de junho de 2026
 
 > ⚠️ **Aviso:** Este é um modelo inicial gerado para acelerar o trabalho. Antes de publicar, peça revisão de um(a) advogado(a), especialmente sobre responsabilidade, reembolso e foro.
 
-Estes Termos de Uso ("Termos") regem o uso do aplicativo **Walkers Kanban** ("Serviço", "Aplicativo"), operado por **[RAZÃO SOCIAL]**, inscrita no CNPJ sob nº **[CNPJ]**, com sede em **[ENDEREÇO]** ("nós", "Walkers"). Ao criar uma conta ou usar o Serviço, você ("Usuário") concorda com estes Termos.
+Estes Termos de Uso ("Termos") regem o uso do aplicativo **Walkers Kanban** ("Serviço", "Aplicativo"), operado por **Leonardo Aleixo Hilario**, pessoa física, na qualidade de responsável pelo Serviço, com contato pelo e-mail **leoaleixohilario@gmail.com** ("nós", "Walkers"). Ao criar uma conta ou usar o Serviço, você ("Usuário") concorda com estes Termos.
 
 ## 1. Descrição do Serviço
 O Walkers Kanban é uma ferramenta de gestão de tarefas, projetos e clientes (kanban, CRM, agenda, automações e portal de acompanhamento), oferecida nas versões desktop e web.
@@ -48,7 +48,7 @@ Podemos suspender ou encerrar contas que violem estes Termos. Você pode encerra
 Podemos atualizar estes Termos. Mudanças relevantes serão comunicadas por e-mail ou aviso no Aplicativo, com antecedência razoável.
 
 ## 12. Lei Aplicável e Foro
-Estes Termos são regidos pelas leis do Brasil. Fica eleito o foro da comarca de **[CIDADE/UF]**, salvo competência de foro do consumidor.
+Estes Termos são regidos pelas leis do Brasil. Fica eleito o foro do domicílio do Usuário consumidor para dirimir controvérsias.
 
 ## 13. Contato
-Dúvidas: **[email de contato]**.
+Dúvidas: **leoaleixohilario@gmail.com**.

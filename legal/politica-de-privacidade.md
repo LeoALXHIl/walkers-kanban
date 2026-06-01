@@ -1,14 +1,14 @@
 # Política de Privacidade — Walkers Kanban
 
-**Última atualização:** [DATA]
+**Última atualização:** 1º de junho de 2026
 
 > ⚠️ **Aviso:** Modelo inicial em conformidade com a LGPD (Lei nº 13.709/2018). Revise com apoio jurídico antes de publicar e ajuste conforme o que o seu produto realmente coleta.
 
-Esta Política explica como **[RAZÃO SOCIAL]** (CNPJ **[CNPJ]**) trata dados pessoais no **Walkers Kanban**.
+Esta Política explica como **Leonardo Aleixo Hilario** (pessoa física, responsável pelo tratamento dos dados) trata dados pessoais no **Walkers Kanban**.
 
 ## 1. Controlador e Encarregado (DPO)
-- **Controlador:** [RAZÃO SOCIAL], [ENDEREÇO].
-- **Encarregado(a) pelo Tratamento de Dados (DPO):** [NOME] — **[email do DPO]**.
+- **Controlador:** Leonardo Aleixo Hilario (pessoa física). Contato pelo e-mail abaixo.
+- **Encarregado(a) pelo Tratamento de Dados (DPO):** Leonardo Aleixo Hilario — **leoaleixohilario@gmail.com**.
 
 ## 2. Dados que coletamos
 | Categoria | Exemplos | Finalidade | Base legal (LGPD art. 7º) |
@@ -35,7 +35,7 @@ Alguns operadores processam dados fora do Brasil. Adotamos salvaguardas contratu
 Mantemos os dados enquanto a conta existir. Após o encerramento, excluímos ou anonimizamos em prazo razoável, salvo obrigação legal de guarda.
 
 ## 8. Seus direitos (LGPD art. 18)
-Você pode solicitar: confirmação e acesso, correção, anonimização, portabilidade, eliminação, informação sobre compartilhamento e revogação de consentimento. Para exercê-los, escreva para **[email do DPO]**.
+Você pode solicitar: confirmação e acesso, correção, anonimização, portabilidade, eliminação, informação sobre compartilhamento e revogação de consentimento. Para exercê-los, escreva para **leoaleixohilario@gmail.com**.
 
 ## 9. Segurança
 Usamos criptografia em trânsito, regras de acesso por usuário no banco (Firestore Security Rules) e armazenamento criptografado de tokens. Nenhum sistema é 100% seguro; em caso de incidente relevante, comunicaremos você e a ANPD conforme a lei.
@@ -50,4 +50,4 @@ O Serviço não se destina a menores de 18 anos.
 Podemos atualizar esta Política; mudanças relevantes serão comunicadas.
 
 ## 13. Contato
-**[email do DPO]** — [RAZÃO SOCIAL].
+**leoaleixohilario@gmail.com** — Leonardo Aleixo Hilario.
