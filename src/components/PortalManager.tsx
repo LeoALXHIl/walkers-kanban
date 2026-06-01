@@ -234,6 +234,8 @@ function ShareForm({ existing, clientKey, clientDisplayName, workspaceId, ownerU
   const [contactPhone, setContactPhone] = useState(existing?.branding?.contactPhone || '');
   const [contactEmail, setContactEmail] = useState(existing?.branding?.contactEmail || '');
   const [primaryColor, setPrimaryColor] = useState(existing?.branding?.primaryColor || '#7c5cfc');
+  const [logoUrl, setLogoUrl] = useState(existing?.branding?.logoUrl || '');
+  const [brandName, setBrandName] = useState(existing?.branding?.brandName || '');
   const [showBrand, setShowBrand] = useState(existing?.branding?.showWalkersBrand ?? true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -261,6 +263,8 @@ function ShareForm({ existing, clientKey, clientDisplayName, workspaceId, ownerU
         allowApprovals,
         branding: {
           primaryColor,
+          logoUrl: logoUrl.trim() || undefined,
+          brandName: brandName.trim() || undefined,
           showWalkersBrand: showBrand,
           welcomeMessage: welcomeMessage.trim() || undefined,
           contactPhone: contactPhone.trim() || undefined,
@@ -352,8 +356,19 @@ function ShareForm({ existing, clientKey, clientDisplayName, workspaceId, ownerU
       </div>
 
       <details style={{ marginTop: 8, marginBottom: 14 }}>
-        <summary style={{ cursor: 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text2)' }}>🎨 Branding (avançado)</summary>
+        <summary style={{ cursor: 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text2)' }}>🎨 Branding (white-label)</summary>
         <div className="frow" style={{ marginTop: 8 }}>
+          <label className="flabel">Nome da sua marca</label>
+          <input className="finput" placeholder="Ex.: Studio Leo Digital" value={brandName} onChange={(e) => setBrandName(e.target.value)} />
+        </div>
+        <div className="frow">
+          <label className="flabel">Logo (URL da imagem)</label>
+          <input className="finput" type="url" placeholder="https://.../logo.png" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} />
+          {logoUrl.trim() && (
+            <img src={logoUrl} alt="" style={{ height: 32, marginTop: 8, borderRadius: 4 }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          )}
+        </div>
+        <div className="frow">
           <label className="flabel">Cor primária</label>
           <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} style={{ width: 60, height: 32, border: 'none', cursor: 'pointer' }} />
         </div>

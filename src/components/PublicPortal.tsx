@@ -91,7 +91,11 @@ export function PublicPortal({ slug, token = '' }: { slug: string; token?: strin
     <Shell accent={accent}>
       {/* Cabeçalho */}
       <div style={{ background: accent, color: '#fff', padding: '28px 24px', borderRadius: '0 0 20px 20px' }}>
-        {share.branding?.logoUrl && <img src={share.branding.logoUrl} alt="" style={{ height: 40, marginBottom: 12 }} />}
+        {share.branding?.logoUrl
+          ? <img src={share.branding.logoUrl} alt={share.branding?.brandName || ''} style={{ height: 40, marginBottom: 12 }} />
+          : share.branding?.brandName
+            ? <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 10 }}>{share.branding.brandName}</div>
+            : null}
         <div style={{ fontSize: 13, opacity: .85 }}>Status da implementação</div>
         <div style={{ fontSize: 24, fontWeight: 700 }}>{share.clientDisplayName}</div>
         {share.branding?.welcomeMessage && (
@@ -179,11 +183,15 @@ export function PublicPortal({ slug, token = '' }: { slug: string; token?: strin
             Atualizado em {fmtTs(share.snapshot.updatedAt)}
           </div>
         )}
-        {(share.branding?.showWalkersBrand ?? true) && (
+        {(share.branding?.showWalkersBrand ?? true) ? (
           <div style={{ textAlign: 'center', fontSize: 11, color: '#b6b9c8', marginTop: 10 }}>
             Powered by <strong>Walkers Kanban</strong>
           </div>
-        )}
+        ) : share.branding?.brandName ? (
+          <div style={{ textAlign: 'center', fontSize: 11, color: '#b6b9c8', marginTop: 10 }}>
+            Feito por <strong>{share.branding.brandName}</strong>
+          </div>
+        ) : null}
       </div>
     </Shell>
   );

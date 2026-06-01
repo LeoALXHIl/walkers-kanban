@@ -238,7 +238,8 @@ export type PublicShareField = 'progress' | 'cards' | 'subtasks' | 'comments' | 
 export interface PublicShareBranding {
   primaryColor?: string;
   accentColor?: string;
-  logoUrl?: string;          // client's logo (premium white-label)
+  logoUrl?: string;          // logo do consultor/marca (white-label)
+  brandName?: string;        // nome da marca/negócio do consultor (white-label)
   showWalkersBrand?: boolean; // false = white-label puro
   welcomeMessage?: string;
   contactPhone?: string;
