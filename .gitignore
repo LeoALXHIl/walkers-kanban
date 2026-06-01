@@ -1,7 +1,17 @@
 node_modules/
 dist/
+release/
 .DS_Store
 *.log
 .vite/
 WalkersKanban-win32-x64/
 *.local
+
+# segredos / ambiente — NUNCA commitar
+.env
+.env.*
+!.env.example
+*serviceAccount*.json
+*credentials*.json
+*.pem
+*.key
