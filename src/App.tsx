@@ -49,6 +49,7 @@ import { ScheduleMeetingModal } from '@/components/ScheduleMeetingModal';
 import { NewClientModal } from '@/components/NewClientModal';
 import { BulkActionBar } from '@/components/BulkActionBar';
 import { ActivationChecklist } from '@/components/ActivationChecklist';
+import { WelcomeModal } from '@/components/WelcomeModal';
 import { QuickPromptModal } from '@/components/QuickPromptModal';
 import { WorkspaceModal, JoinWorkspaceModal, NewWorkspaceModal } from '@/components/WorkspaceModal';
 import { Toast } from '@/components/Toast';
@@ -453,6 +454,7 @@ export function App() {
       <Toast />
       <CheatsheetModal />
       <ActivationChecklist />
+      <WelcomeModal />
     </>
   );
 }
