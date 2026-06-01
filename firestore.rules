@@ -4,6 +4,16 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ──────────────────────────────────────────────────────
+    // Cofre do refresh_token Google (conexão persistente).
+    // NEGADO a todo cliente — só o Admin SDK (Cloud Functions) acessa.
+    // Tem que vir ANTES de qualquer match amplo. Fica FORA de users/{uid}
+    // de propósito: lá a regra recursiva concederia leitura ao dono.
+    // ──────────────────────────────────────────────────────
+    match /googleAuth/{uid} {
+      allow read, write: if false;
+    }
+
+    // ──────────────────────────────────────────────────────
     // Per-user data: profile, legacy kanban
     // Acesso restrito ao próprio dono.
     // ──────────────────────────────────────────────────────

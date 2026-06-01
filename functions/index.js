@@ -19,6 +19,13 @@ const nodemailer = require('nodemailer');
 admin.initializeApp();
 setGlobalOptions({ region: 'us-central1', maxInstances: 5 });
 
+// Conexão Google persistente (proxy total) — ver functions/google.js
+const google = require('./google');
+exports.googleOAuthCallback = google.googleOAuthCallback;
+exports.googleCalendar = google.googleCalendar;
+exports.googleStatus = google.googleStatus;
+exports.googleDisconnect = google.googleDisconnect;
+
 const EMAIL_USER = defineSecret('EMAIL_USER'); // ex: voce@gmail.com
 const EMAIL_PASS = defineSecret('EMAIL_PASS'); // App Password de 16 dígitos
 const POWERBI_KEY = defineSecret('POWERBI_KEY'); // chave secreta pro endpoint do Power BI

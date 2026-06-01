@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { initializeFirestore, doc, type DocumentReference } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCqoVXms7wjEs_Ja8Tr8FzGXp_FSuiZd8g',
@@ -47,6 +48,12 @@ export const fbApp = initializeApp(firebaseConfig);
 // values to prevent "Unsupported field value: undefined" errors on setDoc/updateDoc.
 export const db = initializeFirestore(fbApp, { ignoreUndefinedProperties: true });
 export const auth = getAuth(fbApp);
+export const functions = getFunctions(fbApp, 'us-central1');
+
+// Client ID OAuth tipo "Web" (aceita redirect URI) — usado na conexão Google
+// PERSISTENTE (proxy via Functions). Diferente do EMBEDDED (Desktop) acima.
+// Defina VITE_GOOGLE_OAUTH_CLIENT_ID no .env.production. Vazio = recurso inerte.
+export const GOOGLE_OAUTH_WEB_CLIENT_ID = (import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID as string | undefined) || '';
 
 export function userKanbanDoc(uid: string): DocumentReference {
   return doc(db, 'users', uid, 'kanban', 'main');
