@@ -7,6 +7,13 @@ release/
 WalkersKanban-win32-x64/
 *.local
 
+# instaladores / binários de build — não versionar
+instalador/
+*.exe
+*.dmg
+*.AppImage
+*.blockmap
+
 # segredos / ambiente — NUNCA commitar
 .env
 .env.*
