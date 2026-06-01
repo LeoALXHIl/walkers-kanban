@@ -1,0 +1,64 @@
+appId: app.walkers.kanban
+productName: Walkers Kanban
+copyright: Copyright © 2026 Walkers
+
+directories:
+  output: release
+  buildResources: build
+
+# Only ship what's needed to run the app.
+files:
+  - main.js
+  - preload.js
+  - mcp-server.js
+  - dist/**/*
+  - icon.ico
+  - icon-192.png
+  - icon-512.png
+  - package.json
+  - "!**/.{DS_Store,vite,git,gitignore,gitkeep}"
+  - "!**/{node_modules,dist}/.cache"
+
+# Keep mcp-server.js unpacked so users can point Claude Desktop to it on disk.
+asarUnpack:
+  - mcp-server.js
+
+win:
+  target:
+    - target: nsis
+      arch: x64
+  icon: icon.ico
+  artifactName: "Walkers-Setup-${version}.${ext}"
+  # Uncomment + supply paths once you have a code-signing certificate:
+  # certificateFile: build/cert.pfx
+  # certificatePassword: env:CSC_KEY_PASSWORD
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  allowElevation: true
+  shortcutName: Walkers Kanban
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  menuCategory: false
+  installerIcon: icon.ico
+  uninstallerIcon: icon.ico
+  uninstallDisplayName: "${productName}"
+  deleteAppDataOnUninstall: false
+  runAfterFinish: true
+
+# Auto-update — configure once you have a release host.
+# Easiest options: GitHub Releases (provider: github) or a static file server (provider: generic).
+# Leave commented out for now; the app will simply skip update checks until configured.
+#
+# publish:
+#   provider: github
+#   owner: your-github-username
+#   repo: walkers-kanban
+#   releaseType: release
+#
+# OR static server:
+# publish:
+#   provider: generic
+#   url: https://walkers-kanban.example.com/releases/
