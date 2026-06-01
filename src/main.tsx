@@ -4,12 +4,20 @@ import { App } from './App';
 import { PublicPortal } from './components/PublicPortal';
 import { MobileBanner } from './components/MobileBanner';
 import { initSentry } from './services/sentry';
-import { installBrowserBridge } from './services/browserBridge';
+import { installBrowserBridge, isWebMode } from './services/browserBridge';
 import './styles/global.css';
 
 // Compatibilidade web: instala window.walkersAPI no navegador ANTES de qualquer
 // uso (no Electron isso é no-op, pois o preload já forneceu a ponte real).
 installBrowserBridge();
+
+// PWA: registra o service worker só na versão web (no Electron não faz sentido).
+// Habilita instalação ("Adicionar à tela inicial") e shell offline básico.
+if (isWebMode() && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
 
 // Monitoramento de erros (no-op sem VITE_SENTRY_DSN — ver SETUP-MONETIZACAO.md).
 initSentry();
