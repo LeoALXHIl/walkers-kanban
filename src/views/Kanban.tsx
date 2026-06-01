@@ -7,6 +7,7 @@ import { useFilteredCards } from '@/hooks/useFilteredCards';
 import { toast } from '@/services/toast';
 import { usePermissions } from '@/services/permissions';
 import { PlusIcon } from '@/services/icons';
+import { seedExampleBoard } from '@/services/exampleBoard';
 
 export function KanbanView() {
   const allCols = useData(s => s.data.cols);
@@ -65,6 +66,17 @@ export function KanbanView() {
           <button className="btn btn-primary" onClick={() => openNewCard()}>
             <PlusIcon /> Criar primeiro card
           </button>
+          {canEdit && (
+            <button
+              className="btn btn-ghost"
+              onClick={() => {
+                const n = seedExampleBoard();
+                if (n > 0) toast.success(`Exemplo carregado — ${n} cards de consultor de WhatsApp. Pode editar ou apagar à vontade.`, { durationMs: 5000 });
+              }}
+            >
+              ✨ Carregar exemplo
+            </button>
+          )}
         </div>
         <div className="board-empty-hint">
           💡 Dica: também dá pra ditar (🎤 no topo) ou colar um print de WhatsApp (Ctrl+V)
