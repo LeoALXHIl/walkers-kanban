@@ -14,13 +14,20 @@ const firebaseConfig = {
 export const FIREBASE_API_KEY = firebaseConfig.apiKey;
 export const FIREBASE_PROJECT_ID = firebaseConfig.projectId;
 
-// Google OAuth scopes used for Calendar + Gmail integrations.
-// Requested during signInWithPopup; consented to once per session.
+// Google OAuth scopes. Requested during signInWithPopup; consentidos por sessão.
+// Gmail está DESATIVADO: gmail.readonly/gmail.send são scopes RESTRITOS e exigem
+// avaliação de segurança CASA (cara/demorada) na verificação OAuth. Mantemos só
+// Calendar (scope "sensível", revisão simples). Para reativar Gmail, descomente
+// as linhas e passe pela verificação CASA do Google.
 export const GOOGLE_SCOPES = [
-  'https://www.googleapis.com/auth/calendar.events',
-  'https://www.googleapis.com/auth/gmail.readonly',
-  'https://www.googleapis.com/auth/gmail.send'
+  'https://www.googleapis.com/auth/calendar.events'
+  // 'https://www.googleapis.com/auth/gmail.readonly',
+  // 'https://www.googleapis.com/auth/gmail.send'
 ];
+
+// Flag única: features de Gmail ficam ocultas enquanto o scope não estiver
+// verificado (CASA). Vire para `true` ao reativar os scopes acima.
+export const GMAIL_ENABLED = false;
 
 // ─── Embedded Desktop OAuth Client (for distribution to end-users) ───
 // Cole aqui o Client ID do seu **Desktop App** OAuth (criado no Google Cloud Console).

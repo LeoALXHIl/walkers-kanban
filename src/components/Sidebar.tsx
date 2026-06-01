@@ -17,6 +17,7 @@ import { UserChip } from './UserChip';
 import { StreakBadge } from './StreakBadge';
 import { OnlineBadge } from './OnlineBadge';
 import type { ViewKey } from '@/types';
+import { GMAIL_ENABLED } from '@/services/firebase';
 
 export function Sidebar() {
   const view = useUI(s => s.view);
@@ -85,7 +86,7 @@ export function Sidebar() {
     ]},
     { title: 'Pessoal', items: [
       { key: 'inbox', label: 'Caixa de Entrada', icon: <InboxIcon />, badge: unread || undefined, alert: unread > 0 },
-      { key: 'emails', label: 'Emails (Gmail)', icon: <EmailIcon /> },
+      ...(GMAIL_ENABLED ? [{ key: 'emails' as ViewKey, label: 'Emails (Gmail)', icon: <EmailIcon /> }] : []),
       { key: 'starred', label: 'Favoritos', icon: <StarOutlineIcon />, badge: starredCount || undefined },
       { key: 'snoozed', label: 'Adormecidos', icon: <SnoozeIcon />, badge: snoozedCount || undefined },
       { key: 'archive', label: 'Arquivo', icon: <ArchiveIcon />, badge: archivedCount || undefined }

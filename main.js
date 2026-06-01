@@ -348,9 +348,10 @@ function createWindow() {
 // Gives a refresh_token that lasts ~6 months without use, mean transparent
 // access_token refresh forever. Way better than Firebase signInWithPopup
 // (which only gives a 1h access_token with no refresh).
+// Gmail DESATIVADO (scope restrito → exige avaliação CASA). Só Calendar por ora.
 const GOOGLE_SCOPES = [
-  'https://www.googleapis.com/auth/calendar.events.readonly',
-  'https://www.googleapis.com/auth/gmail.readonly'
+  'https://www.googleapis.com/auth/calendar.events.readonly'
+  // 'https://www.googleapis.com/auth/gmail.readonly'
 ].join(' ');
 
 function saveEncrypted(filePath, data) {

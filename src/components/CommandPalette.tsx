@@ -10,6 +10,7 @@ import {
 } from '@/services/icons';
 import { pickHashColor } from '@/services/colors';
 import { getRecentCards } from '@/services/recent';
+import { GMAIL_ENABLED } from '@/services/firebase';
 import { quickPrompt } from '@/services/quickPrompt';
 
 type CmdCategory = 'Ações' | 'Cards' | 'Clientes' | 'Views' | 'Filtros' | 'Conta' | 'Boards' | 'Recentes';
@@ -138,7 +139,7 @@ export function CommandPalette() {
     list.push({ id: 'view:analytics', label: 'Analytics', description: 'Funil, heatmap, top clientes', category: 'Views', icon: <AnalyticsIcon />, shortcut: '7', run: () => setView('analytics') });
     list.push({ id: 'view:integrations', label: 'Integrações', description: 'Webhooks e conectores', category: 'Views', icon: <IntegrationsIcon />, shortcut: '8', run: () => setView('integrations') });
     list.push({ id: 'view:calendar', label: 'Calendar', description: 'Vencimentos + Google Calendar', category: 'Views', icon: <CalendarIcon />, shortcut: '9', keywords: 'agenda mes reuniao meeting', run: () => setView('calendar') });
-    list.push({ id: 'view:emails', label: 'Emails (Gmail)', description: 'Sua caixa Gmail aqui', category: 'Views', icon: <EmailIcon />, shortcut: '0', keywords: 'email gmail mensagens caixa', run: () => setView('emails') });
+    if (GMAIL_ENABLED) list.push({ id: 'view:emails', label: 'Emails (Gmail)', description: 'Sua caixa Gmail aqui', category: 'Views', icon: <EmailIcon />, shortcut: '0', keywords: 'email gmail mensagens caixa', run: () => setView('emails') });
     list.push({ id: 'view:templates', label: 'Templates', description: 'Criar cards repetitivos com 1 clique', category: 'Views', icon: <span>📋</span> as any, keywords: 'templates modelos repetitivo recorrente padrao', run: () => setView('templates') });
 
     // ─── Boards ─────────────────────────────────────────

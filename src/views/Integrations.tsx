@@ -5,6 +5,7 @@ import { useAuth } from '@/store/auth';
 import { TrashIcon } from '@/services/icons';
 import { toast } from '@/services/toast';
 import { listGmailMessages, getGmailMessageBody, prettySender, GoogleAuthError, type GmailMessageBrief } from '@/services/google';
+import { GMAIL_ENABLED } from '@/services/firebase';
 import { parseTranscript } from '@/services/parser';
 import { downloadIcs } from '@/services/ical';
 import { exportCards, exportSubtasks, exportClients } from '@/services/exportData';
@@ -191,7 +192,7 @@ export function IntegrationsView() {
     <div className="integrations-view">
       <div className="int-intro">
         <h2>Integrações</h2>
-        <p>Conecte o Walkers com suas ferramentas. Faça login com Google pra ativar Calendar e Gmail.</p>
+        <p>Conecte o Walkers com suas ferramentas. Faça login com Google pra ativar o Calendar.</p>
       </div>
 
       {/* ─── Exportar dados (Power BI / Excel) — grátis, sem API ─── */}
@@ -454,7 +455,8 @@ export function IntegrationsView() {
         </div>
       </div>
 
-      {/* ─── Gmail real ─── */}
+      {/* ─── Gmail real (oculto enquanto o scope não é verificado — ver GMAIL_ENABLED) ─── */}
+      {GMAIL_ENABLED && (
       <div className="int-section">
         <div className="int-section-head">
           <div>
@@ -502,6 +504,7 @@ export function IntegrationsView() {
           <div className="int-empty">Conecte o Google primeiro pra usar Gmail → Card.</div>
         )}
       </div>
+      )}
 
       {/* ─── iCal Export ─── */}
       <div className="int-section">
