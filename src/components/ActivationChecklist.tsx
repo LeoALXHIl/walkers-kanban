@@ -3,6 +3,7 @@ import { useData } from '@/store/data';
 import { useUI } from '@/store/ui';
 import { useAuth } from '@/store/auth';
 import { confetti } from '@/services/confetti';
+import { startTour } from '@/components/GuidedTour';
 import { toast } from '@/services/toast';
 
 // Checklist de ativação (Sprint 3). Guia o usuário novo até o "aha".
@@ -195,15 +196,26 @@ export function ActivationChecklist() {
         ))}
       </div>
 
-      <button
-        onClick={dismiss}
-        style={{
-          width: '100%', padding: '9px', border: 'none', borderTop: '1px solid var(--border, #2c2c3a)',
-          background: 'transparent', color: 'var(--text2, #9b9bb0)', fontSize: 12, cursor: 'pointer'
-        }}
-      >
-        Dispensar
-      </button>
+      <div style={{ display: 'flex', borderTop: '1px solid var(--border, #2c2c3a)' }}>
+        <button
+          onClick={() => startTour()}
+          style={{
+            flex: 1, padding: '9px', border: 'none', borderRight: '1px solid var(--border, #2c2c3a)',
+            background: 'transparent', color: 'var(--text2, #9b9bb0)', fontSize: 12, cursor: 'pointer'
+          }}
+        >
+          🧭 Refazer tour
+        </button>
+        <button
+          onClick={dismiss}
+          style={{
+            flex: 1, padding: '9px', border: 'none',
+            background: 'transparent', color: 'var(--text2, #9b9bb0)', fontSize: 12, cursor: 'pointer'
+          }}
+        >
+          Dispensar
+        </button>
+      </div>
     </div>
   );
 }

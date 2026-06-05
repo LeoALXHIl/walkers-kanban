@@ -8,7 +8,7 @@ O navegador nunca vê tokens do Google. Você autoriza uma vez → uma Cloud Fun
 ---
 
 ## 1. Criar um OAuth client tipo **Web** (não Desktop)
-1. https://console.cloud.google.com/apis/credentials?project=walkerskambam
+1.    
 2. **+ CRIAR CREDENCIAIS → ID do cliente OAuth**
 3. Tipo de aplicativo: **Aplicativo da Web**
 4. Nome: `Walkers Kanban Web`

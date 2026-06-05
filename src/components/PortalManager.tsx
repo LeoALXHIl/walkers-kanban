@@ -6,7 +6,7 @@ import { useData } from '@/store/data';
 import { createShare, updateShare, revokeShare, getShare, subscribeShare, subscribeComments, hashPin, portalUrl, genToken, buildSnapshot, pushSnapshot, type CreateShareOpts } from '@/services/publicShares';
 import { toast } from '@/services/toast';
 import { fmtTime } from '@/services/storage';
-import type { PublicShare, PublicShareField, PublicShareComment } from '@/types';
+import type { PublicShare, PublicShareField, PublicShareComment, Card } from '@/types';
 
 const FIELD_OPTIONS: Array<{ v: PublicShareField; label: string; desc: string }> = [
   { v: 'progress',    label: '📊 Barra de progresso geral',   desc: 'Quantos % das etapas estão concluídas' },
@@ -58,7 +58,7 @@ export function PortalManager({ clientKey, clientDisplayName }: Props) {
   // Mantém o snapshot público atualizado enquanto a aba está aberta (e logo após criar/editar).
   useEffect(() => {
     if (!share) return;
-    const snap = buildSnapshot(cards, cols, share.visibleFields);
+    const snap = buildSnapshot(cards, cols, share.visibleFields, share.cardIdsFilter);
     const t = setTimeout(() => pushSnapshot(share.slug, snap), 800);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,6 +77,7 @@ export function PortalManager({ clientKey, clientDisplayName }: Props) {
       existing={editing ? share : null}
       clientKey={clientKey}
       clientDisplayName={clientDisplayName}
+      clientCards={cards}
       workspaceId={workspaceId}
       ownerUid={user?.uid || ''}
       onClose={() => { setCreating(false); setEditing(false); }}
@@ -210,16 +211,32 @@ export function PortalManager({ clientKey, clientDisplayName }: Props) {
   );
 }
 
-function ShareForm({ existing, clientKey, clientDisplayName, workspaceId, ownerUid, onClose, onSaved }: {
+function ShareForm({ existing, clientKey, clientDisplayName, clientCards, workspaceId, ownerUid, onClose, onSaved }: {
   existing: PublicShare | null;
   clientKey: string;
   clientDisplayName: string;
+  clientCards: Card[];
   workspaceId: string;
   ownerUid: string;
   onClose: () => void;
   onSaved: (s: PublicShare) => void;
 }) {
   const [fields, setFields] = useState<PublicShareField[]>(existing?.visibleFields || DEFAULT_FIELDS);
+  // Cards visíveis no portal. Sem filtro salvo = todos visíveis (whitelist vazia → tudo).
+  const visibleCards = clientCards.filter(c => !c.archived);
+  const [hiddenCardIds, setHiddenCardIds] = useState<Set<string>>(() => {
+    const filter = existing?.cardIdsFilter;
+    if (!filter || !filter.length) return new Set();
+    const allow = new Set(filter);
+    return new Set(visibleCards.filter(c => !allow.has(c.id)).map(c => c.id));
+  });
+  const toggleCard = (id: string) => {
+    setHiddenCardIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
   const [pin, setPin] = useState('');
   const [enablePin, setEnablePin] = useState(!!existing?.passwordHash);
   const [expires, setExpires] = useState<'never' | '30' | '90' | 'custom'>(
@@ -252,10 +269,16 @@ function ShareForm({ existing, clientKey, clientDisplayName, workspaceId, ownerU
     else if (expires === '90') expiresAt = Date.now() + 90 * 86400000;
     else if (expires === 'custom' && customDate) expiresAt = new Date(customDate + 'T23:59:59').getTime();
 
+    // Whitelist = cards visíveis menos os ocultados. Vazio (nada oculto) → sem filtro.
+    const cardIdsFilter = hiddenCardIds.size
+      ? visibleCards.filter(c => !hiddenCardIds.has(c.id)).map(c => c.id)
+      : undefined;
+
     setSubmitting(true);
     try {
       const opts: CreateShareOpts = {
         workspaceId, ownerUid, clientKey, clientDisplayName,
+        cardIdsFilter,
         visibleFields: fields,
         pin: enablePin ? pin : undefined,
         expiresAt,
@@ -278,6 +301,7 @@ function ShareForm({ existing, clientKey, clientDisplayName, workspaceId, ownerU
         else passwordHash = null; // null limpa o campo no Firestore (undefined seria ignorado)
         await updateShare(existing.slug, {
           visibleFields: fields,
+          cardIdsFilter: (cardIdsFilter ?? null) as any,
           passwordHash: passwordHash as any,
           expiresAt: expiresAt ?? null as any,
           allowComments,
@@ -318,6 +342,26 @@ function ShareForm({ existing, clientKey, clientDisplayName, workspaceId, ownerU
           ))}
         </div>
       </div>
+
+      {visibleCards.length > 1 && (
+        <div className="frow">
+          <label className="flabel">Cards visíveis pro cliente</label>
+          <div style={{ fontSize: 10, color: 'var(--text3)', marginBottom: 6 }}>
+            Desmarque etapas internas que o cliente não deve ver.
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, maxHeight: 160, overflowY: 'auto' }}>
+            {visibleCards.map(c => {
+              const shown = !hiddenCardIds.has(c.id);
+              return (
+                <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 5, cursor: 'pointer', borderRadius: 4, fontSize: 12, opacity: shown ? 1 : 0.5 }}>
+                  <input type="checkbox" checked={shown} onChange={() => toggleCard(c.id)} />
+                  <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.name}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="frow">
         <label className="flabel">🔒 Proteção por PIN</label>

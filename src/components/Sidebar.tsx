@@ -126,6 +126,7 @@ export function Sidebar() {
       <div className="board-switcher" ref={menuRef}>
         <button
           className="board-switcher-btn"
+          data-tour="boards"
           onClick={() => setBoardMenuOpen(o => !o)}
           title="Trocar board"
         >
@@ -173,7 +174,7 @@ export function Sidebar() {
           <div key={g.title}>
             <div className="sb-section">{g.title}</div>
             {g.items.map(it => (
-              <button key={it.key} className={`sb-item${view === it.key ? ' active' : ''}`} onClick={() => setView(it.key)} title={collapsed ? it.label : undefined}>
+              <button key={it.key} data-tour={it.key} className={`sb-item${view === it.key ? ' active' : ''}`} onClick={() => setView(it.key)} title={collapsed ? it.label : undefined}>
                 {it.icon}
                 <span className="sb-item-label">{it.label}</span>
                 {it.badge !== undefined && <span className={`sb-badge${it.alert ? ' alert' : ''}`}>{it.badge}</span>}

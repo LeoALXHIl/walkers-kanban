@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/store/auth';
 import { useData } from '@/store/data';
 import { seedExampleBoard } from '@/services/exampleBoard';
+import { startTour } from '@/components/GuidedTour';
 import { toast } from '@/services/toast';
 
 // Wizard de boas-vindas (Sprint 3). Aparece UMA vez, só pra conta nova
@@ -31,6 +32,12 @@ export function WelcomeModal() {
     if (n > 0) toast.success(`Pronto! ${n} cards de exemplo no seu board. Edite ou apague à vontade.`, { durationMs: 5000 });
   };
 
+  const startWithTour = () => {
+    markSeen();
+    // Deixa o modal fechar antes de medir os alvos da sidebar.
+    setTimeout(() => startTour(), 250);
+  };
+
   return (
     <div className="overlay" onClick={(e) => { if (e.target === e.currentTarget) markSeen(); }}>
       <div className="modal" style={{ width: 480, textAlign: 'center' }}>
@@ -55,8 +62,9 @@ export function WelcomeModal() {
           </div>
         </div>
 
-        <div className="mfoot" style={{ justifyContent: 'center', gap: 10 }}>
+        <div className="mfoot" style={{ justifyContent: 'center', gap: 10, flexWrap: 'wrap' }}>
           <button className="btn btn-ghost" onClick={markSeen}>Começar do zero</button>
+          <button className="btn btn-ghost" onClick={startWithTour}>🧭 Fazer tour</button>
           <button className="btn btn-primary" onClick={startWithExample}>✨ Começar com um exemplo</button>
         </div>
       </div>

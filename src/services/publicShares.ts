@@ -69,15 +69,16 @@ export interface CreateShareOpts {
 }
 
 // Monta o snapshot público dos cards respeitando os campos visíveis escolhidos.
-export function buildSnapshot(cards: Card[], cols: Column[], fields: PublicShareField[]): PublicShareSnapshot {
+export function buildSnapshot(cards: Card[], cols: Column[], fields: PublicShareField[], cardIdsFilter?: string[]): PublicShareSnapshot {
   const lastColId = cols.length ? cols[cols.length - 1].id : null;
   const colName = (id: string) => cols.find(c => c.id === id)?.name || '';
   const showSub = fields.includes('subtasks');
   const showDesc = fields.includes('description');
   const showPlat = fields.includes('plat');
+  const allow = cardIdsFilter && cardIdsFilter.length ? new Set(cardIdsFilter) : null;
   return {
     updatedAt: Date.now(),
-    cards: cards.filter(c => !c.archived).map(c => {
+    cards: cards.filter(c => !c.archived && (!allow || allow.has(c.id))).map(c => {
       const subs = c.subtasks || [];
       const snap: PublicShareCardSnap = {
         id: c.id,

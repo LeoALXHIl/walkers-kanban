@@ -5,7 +5,7 @@ import { useUI, anyModalOpen, getViewForBoard, rememberViewForBoard } from '@/st
 import { useNotifications } from '@/store/notifications';
 import { useTheme } from '@/store/theme';
 import { useWorkspace } from '@/store/workspace';
-import { Login } from '@/views/Login';
+import { Landing } from '@/views/Landing';
 import { Sidebar } from '@/components/Sidebar';
 import { Topbar } from '@/components/Topbar';
 import { KanbanView } from '@/views/Kanban';
@@ -31,6 +31,7 @@ import { CheatsheetModal } from '@/components/CheatsheetModal';
 import { ClientDetailModal } from '@/components/ClientDetailModal';
 import { CardDetail } from '@/components/CardDetail';
 import { NewCardModal } from '@/components/NewCardModal';
+import { consumeSharedCardSeed } from '@/services/shareTarget';
 import { ColumnModal } from '@/components/ColumnModal';
 import { DeleteCardModal, DeleteColumnModal } from '@/components/ConfirmModals';
 import { McpInfoModal } from '@/components/McpInfoModal';
@@ -50,12 +51,14 @@ import { NewClientModal } from '@/components/NewClientModal';
 import { BulkActionBar } from '@/components/BulkActionBar';
 import { ActivationChecklist } from '@/components/ActivationChecklist';
 import { WelcomeModal } from '@/components/WelcomeModal';
+import { GuidedTour } from '@/components/GuidedTour';
 import { QuickPromptModal } from '@/components/QuickPromptModal';
 import { WorkspaceModal, JoinWorkspaceModal, NewWorkspaceModal } from '@/components/WorkspaceModal';
 import { Toast } from '@/components/Toast';
 import { aggregate, effectiveStreak, streakAtRisk, todayStr, weekId } from '@/services/streak';
 import { migrateData } from '@/services/storage';
 import { runAllReminders } from '@/services/dueReminders';
+import { startPortalWatcher, stopPortalWatcher } from '@/services/portalWatcher';
 import { setDoc } from 'firebase/firestore';
 
 export function App() {
@@ -145,6 +148,21 @@ export function App() {
       teardown();
     }
   }, [user, authReady]);
+
+  // Portal: vigia comentários/aprovações dos clientes e notifica o consultor.
+  useEffect(() => {
+    if (!user) return;
+    const t = setTimeout(() => startPortalWatcher(user.uid), 4000); // após o boot dos dados
+    return () => { clearTimeout(t); stopPortalWatcher(); };
+  }, [user]);
+
+  // Web Share Target (Sprint 5): conteúdo compartilhado pro PWA (ex: msg do WhatsApp)
+  // abre o "novo card" já pré-preenchido. Só dispara logado e uma vez (a URL é limpa).
+  useEffect(() => {
+    if (!user) return;
+    const seed = consumeSharedCardSeed();
+    if (seed) openNewCard(undefined, seed);
+  }, [user]);
 
   // Flush save on close
   useEffect(() => {
@@ -396,7 +414,7 @@ export function App() {
     );
   }
 
-  if (!user) return <Login />;
+  if (!user) return <Landing />;
 
   return (
     <>
@@ -455,6 +473,7 @@ export function App() {
       <CheatsheetModal />
       <ActivationChecklist />
       <WelcomeModal />
+      <GuidedTour />
     </>
   );
 }
