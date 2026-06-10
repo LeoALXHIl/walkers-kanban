@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<!-- Landing ESTÁTICA (Fase 2 da auditoria): zero JS de framework, carrega
+     instantâneo e é indexável. O app React vive em /app (app.html).
+     Waitlist do Pro grava via Firestore REST (rules: create-only). -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="index,follow"/>
+<meta name="google-site-verification" content="5uvR1lvmnUNuxel2optSTsPwRJOPJAdpPduMGJlwVE4"/>
+<title>Walkers — Kanban e CRM para consultores de WhatsApp</title>
+<meta name="description" content="Organize clientes, tarefas, prazos e agenda num só lugar. Portal white-label pro seu cliente acompanhar o projeto. Grátis pra começar."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://walkerskambam.web.app/"/>
+<meta property="og:title" content="Walkers — Kanban e CRM para consultores de WhatsApp"/>
+<meta property="og:description" content="Organize clientes, tarefas, prazos e agenda num só lugar. Portal white-label pro seu cliente acompanhar o projeto. Grátis pra começar."/>
+<meta property="og:image" content="https://walkerskambam.web.app/icon-512.png"/>
+<meta property="og:locale" content="pt_BR"/>
+<meta property="og:site_name" content="Walkers Kanban"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Walkers — Kanban e CRM para consultores de WhatsApp"/>
+<meta name="twitter:description" content="Organize clientes, tarefas, prazos e agenda num só lugar. Grátis pra começar."/>
+<meta name="twitter:image" content="https://walkerskambam.web.app/icon-512.png"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<link rel="icon" href="/icon.ico" sizes="any"/>
+<link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192"/>
+<link rel="apple-touch-icon" href="/icon-192.png"/>
+<meta name="theme-color" content="#7c3aed"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(ellipse at top,#1a1430 0%,#0d0e11 55%);color:#e8e8f0;font:16px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+  .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#7c5cfc,#ec4899);display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff}
+  .nav-links{display:flex;align-items:center;gap:22px;font-size:14px;color:#b8b8c8}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:inherit;transition:transform .12s,box-shadow .12s,background .15s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-primary{background:linear-gradient(135deg,#7c5cfc,#ec4899);color:#fff;box-shadow:0 8px 24px rgba(124,92,252,.35)}
+  .btn-ghost{background:rgba(255,255,255,.06);color:#e8e8f0;border-color:rgba(255,255,255,.12)}
+  .hero{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;padding:44px 0 64px}
+  .badge{display:inline-block;padding:6px 12px;border-radius:999px;background:rgba(124,92,252,.15);border:1px solid rgba(124,92,252,.35);font-size:12px;color:#c4b5fd;margin-bottom:18px}
+  h1{font-size:42px;line-height:1.1;font-weight:800;margin:0 0 18px;letter-spacing:-.02em}
+  .grad{background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:16px;line-height:1.6;color:#b8b8c8;margin:0 0 24px;max-width:520px}
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .trust{font-size:12px;color:#a9a9bc}
+  /* mockup do produto */
+  .pv{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:12px;box-shadow:0 24px 80px rgba(0,0,0,.45)}
+  .pv-top{display:flex;gap:6px;padding:2px 4px 10px}
+  .pv-top span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.14)}
+  .pv-board{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .pv-col{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:9px;min-width:0}
+  .pv-ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#a9a9bc;margin-bottom:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pv-card{background:rgba(20,18,34,.85);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:8px 9px;margin-bottom:7px}
+  .pv-card.hot{border-color:rgba(124,92,252,.55)}
+  .pv-card.done{opacity:.55}
+  .pv-card.done .pv-n{text-decoration:line-through}
+  .pv-n{font-size:11.5px;font-weight:600;line-height:1.3;margin-bottom:5px}
+  .pv-m{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;color:#a9a9bc}
+  .pv-tag{background:rgba(124,92,252,.18);border:1px solid rgba(124,92,252,.3);color:#c4b5fd;padding:1px 7px;border-radius:999px}
+  .section{padding:56px 0}
+  h2{font-size:30px;font-weight:800;text-align:center;margin:0 0 8px;letter-spacing:-.02em}
+  .sub{text-align:center;color:#b8b8c8;margin:0 0 36px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .feat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px}
+  .feat .ico{font-size:28px}
+  .feat h3{font-size:17px;margin:12px 0 6px}
+  .feat p{font-size:14px;line-height:1.55;color:#b8b8c8;margin:0}
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+  .plan{position:relative;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:28px 24px}
+  .plan-hi{border-color:rgba(124,92,252,.6);background:rgba(124,92,252,.08);box-shadow:0 16px 48px rgba(124,92,252,.2);transform:scale(1.03)}
+  .plan-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7c5cfc,#ec4899);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px}
+  .plan-name{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#c4b5fd}
+  .plan-price{font-size:36px;font-weight:800;margin:8px 0 2px}
+  .plan-price span{font-size:14px;font-weight:500;color:#a9a9bc;margin-left:4px}
+  .plan-tl{font-size:13px;color:#b8b8c8;margin-bottom:18px}
+  .plan ul{list-style:none;padding:0;margin:0 0 22px;display:flex;flex-direction:column;gap:9px}
+  .plan li{font-size:13px;color:#d8d8e4}
+  .plan .btn{width:100%}
+  .wl-form{display:none;flex-direction:column;gap:8px}
+  .wl-form.show{display:flex}
+  .wl-form input{padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:#e8e8f0;font-size:14px;font-family:inherit;outline:none}
+  .wl-form input:focus-visible{border-color:#7c5cfc}
+  .wl-err{font-size:12px;color:#fca5a5;display:none}
+  .wl-ok{font-size:13px;font-weight:600;color:#86efac;text-align:center;padding:10px 0;display:none}
+  .cta-final{text-align:center;padding:64px 0}
+  .cta-final h2{margin-bottom:22px}
+  .footer{padding:28px 0 48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.08);font-size:13px;color:#a9a9bc;flex-wrap:wrap;gap:12px}
+  .flinks{display:flex;gap:18px}
+  .flinks a:hover{color:#e8e8f0}
+  @media (max-width:960px){
+    .hero{grid-template-columns:1fr;gap:32px}
+    h1{font-size:32px}
+    .grid,.plans{grid-template-columns:1fr}
+    .plan-hi{transform:none}
+    .nav-links a{display:none}
+  }
+  @media (max-width:480px){
+    .wrap{padding:0 16px}
+    h1{font-size:27px}
+    h2{font-size:24px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav">
+    <div class="brand"><span class="logo">W</span> Walkers</div>
+    <div class="nav-links">
+      <a href="#recursos">Recursos</a>
+      <a href="#planos">Planos</a>
+      <a class="btn btn-ghost" href="/app" style="padding:9px 18px">Entrar</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <span class="badge">✨ Feito pra consultores de WhatsApp</span>
+      <h1>O kanban que organiza seus clientes e <span class="grad">fecha mais projetos</span>.</h1>
+      <p class="lead">Centralize clientes, tarefas, prazos e reuniões num só lugar. Compartilhe um portal profissional com cada cliente e passe a impressão de quem tem tudo sob controle.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="/app">Começar grátis →</a>
+        <a class="btn btn-ghost" href="#planos">Ver planos</a>
+      </div>
+      <div class="trust">Grátis pra começar · Sem cartão · Roda no desktop e no navegador</div>
+    </div>
+    <div class="pv" aria-hidden="true">
+      <div class="pv-top"><span></span><span></span><span></span></div>
+      <div class="pv-board">
+        <div class="pv-col"><div class="pv-ct">A iniciar</div>
+          <div class="pv-card"><div class="pv-n">Onboarding — Casa M.</div><div class="pv-m"><span class="pv-tag">WhatsApp</span><span>qui</span></div></div>
+          <div class="pv-card"><div class="pv-n">Proposta — Closet Fit</div><div class="pv-m"><span class="pv-tag">Proposta</span><span>sex</span></div></div>
+        </div>
+        <div class="pv-col"><div class="pv-ct">Em implementação</div>
+          <div class="pv-card hot"><div class="pv-n">Chatbot — Maiu Fit</div><div class="pv-m"><span class="pv-tag">Bot</span><span>hoje</span></div></div>
+          <div class="pv-card"><div class="pv-n">Catálogo — Dona Flor</div><div class="pv-m"><span class="pv-tag">E-commerce</span><span>ter</span></div></div>
+        </div>
+        <div class="pv-col"><div class="pv-ct">Aguardando cliente</div>
+          <div class="pv-card"><div class="pv-n">Aprovação — Wazzu</div><div class="pv-m"><span class="pv-tag">Aprovação</span><span>—</span></div></div>
+        </div>
+        <div class="pv-col"><div class="pv-ct">Concluído</div>
+          <div class="pv-card done"><div class="pv-n">Setup — Bem Beleza</div><div class="pv-m"><span class="pv-tag">Entregue</span><span>✓</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="recursos">
+    <h2>Tudo que um consultor precisa, sem planilha</h2>
+    <div class="grid" style="margin-top:36px">
+      <div class="feat"><span class="ico">🗂️</span><h3>Cada cliente no lugar</h3><p>Acompanhe do lead à entrega num quadro visual. Arraste, priorize e nunca perca um follow-up.</p></div>
+      <div class="feat"><span class="ico">🤝</span><h3>Portal do cliente</h3><p>Compartilhe um link white-label onde o cliente vê o progresso, comenta e aprova etapas.</p></div>
+      <div class="feat"><span class="ico">📅</span><h3>Agenda integrada</h3><p>Conecte o Google Calendar e veja seus compromissos sem trocar de aba.</p></div>
+      <div class="feat"><span class="ico">🤖</span><h3>Assistente com IA</h3><p>Crie cards por voz, foto ou texto. A IA organiza pra você em segundos.</p></div>
+      <div class="feat"><span class="ico">🔥</span><h3>Streaks e metas</h3><p>Gamificação que te mantém constante e foco nas metas do seu negócio.</p></div>
+      <div class="feat"><span class="ico">📊</span><h3>Dashboard e analytics</h3><p>Veja gargalos, prazos e produtividade em gráficos claros.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="planos">
+    <h2>Planos simples, sem pegadinha</h2>
+    <p class="sub">Hoje tudo é grátis. Os planos pagos chegam em breve — quem entrar na lista garante o preço de fundador.</p>
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">R$0<span>pra sempre</span></div>
+        <div class="plan-tl">Pra começar a organizar hoje</div>
+        <ul><li>✓ Kanban, lista e calendário</li><li>✓ Clientes ilimitados</li><li>✓ Portal do cliente</li><li>✓ App desktop + web (PWA)</li></ul>
+        <a class="btn btn-ghost" href="/app">Começar grátis</a>
+      </div>
+      <div class="plan plan-hi">
+        <span class="plan-tag">Mais popular</span>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">R$39<span>/mês</span></div>
+        <div class="plan-tl">Em breve — preço de fundador garantido</div>
+        <ul><li>✓ Boards ilimitados</li><li>✓ Portal white-label completo</li><li>✓ Google Calendar + IA</li><li>✓ Aprovações e comentários do cliente</li><li>✓ Suporte prioritário</li></ul>
+        <button class="btn btn-primary" id="wlBtn">Entrar na lista do Pro</button>
+        <form class="wl-form" id="wlForm">
+          <input type="email" id="wlEmail" required placeholder="seu@email.com" aria-label="Seu e-mail pra lista de espera"/>
+          <button type="submit" class="btn btn-primary" id="wlSubmit">Avisar quando lançar</button>
+          <div class="wl-err" id="wlErr" role="alert">Não rolou agora. Tenta de novo em instantes.</div>
+        </form>
+        <div class="wl-ok" id="wlOk">✓ Você está na lista! Te aviso no lançamento.</div>
+      </div>
+      <div class="plan">
+        <div class="plan-name">Team</div>
+        <div class="plan-price">R$99<span>/mês</span></div>
+        <div class="plan-tl">Em breve — pra agência ou equipe</div>
+        <ul><li>✓ Tudo do Pro</li><li>✓ Workspace multiusuário</li><li>✓ Papéis e permissões</li><li>✓ Relatórios da equipe</li></ul>
+        <a class="btn btn-ghost" href="mailto:leoaleixohilario@gmail.com?subject=Walkers%20%E2%80%94%20plano%20Team">Falar com a gente</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-final">
+    <h2>Pronto pra organizar seu negócio?</h2>
+    <a class="btn btn-primary" href="/app">Criar minha conta grátis →</a>
+  </section>
+
+  <footer class="footer">
+    <div>© <span id="yr">2026</span> Walkers Kanban · Leonardo Aleixo Hilario</div>
+    <div class="flinks">
+      <a href="/sobre">Sobre</a>
+      <a href="/termos">Termos</a>
+      <a href="/privacidade">Privacidade</a>
+      <a href="/lgpd">LGPD</a>
+      <a href="mailto:leoaleixohilario@gmail.com">Contato</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // Links antigos de portal/app na raiz (#/c/slug, ?title= do share target)
+  // continuam funcionando: manda pro shell do app preservando hash/query.
+  (function () {
+    var h = location.hash || '';
+    var q = location.search || '';
+    if (/^#\/c\//.test(h) || /[?&](title|text|url)=/.test(q)) {
+      location.replace('/app' + q + h);
+    }
+  })();
+
+  document.getElementById('yr').textContent = String(new Date().getFullYear());
+
+  // Waitlist do Pro: grava direto no Firestore via REST (rules: create-only,
+  // payload limitado a email/plan/ts). API key é a pública do projeto web.
+  var FS_URL = 'https://firestore.googleapis.com/v1/projects/walkerskambam/databases/(default)/documents/waitlist?key=AIzaSyCqoVXms7wjEs_Ja8Tr8FzGXp_FSuiZd8g';
+  var wlBtn = document.getElementById('wlBtn');
+  var wlForm = document.getElementById('wlForm');
+  var wlErr = document.getElementById('wlErr');
+  var wlOk = document.getElementById('wlOk');
+  wlBtn.addEventListener('click', function () {
+    wlBtn.style.display = 'none';
+    wlForm.classList.add('show');
+    document.getElementById('wlEmail').focus();
+  });
+  wlForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = document.getElementById('wlEmail').value.trim();
+    var btn = document.getElementById('wlSubmit');
+    btn.disabled = true; btn.textContent = 'Enviando…'; wlErr.style.display = 'none';
+    fetch(FS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: {
+        email: { stringValue: email },
+        plan: { stringValue: 'Pro' },
+        ts: { integerValue: String(Date.now()) }
+      } })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(String(r.status));
+      wlForm.style.display = 'none';
+      wlOk.style.display = 'block';
+    }).catch(function () {
+      wlErr.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Avisar quando lançar';
+    });
+  });
+</script>
+</body>
+</html>

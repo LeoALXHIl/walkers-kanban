@@ -3,8 +3,9 @@
 // assets estáticos do próprio domínio. Estratégia conservadora pra não quebrar
 // a sincronização (dados ficam no Firestore/IndexedDB, não no cache do SW).
 
-const CACHE = 'walkers-shell-v1';
-const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
+const CACHE = 'walkers-shell-v2';
+// Raiz = landing estática; /app.html = shell do app React (servido em /app).
+const APP_SHELL = ['/', '/index.html', '/app.html', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -24,10 +25,13 @@ self.addEventListener('fetch', (event) => {
   // Só GET same-origin. Firebase, Google e qualquer cross-origin passam direto.
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
 
-  // Navegação (SPA): network-first com fallback pro shell quando offline.
+  // Navegação: network-first com fallback pro shell certo quando offline
+  // (rotas /app* caem no shell do app; resto cai na landing).
   if (request.mode === 'navigate') {
+    const isApp = new URL(request.url).pathname.startsWith('/app');
+    const shell = isApp ? '/app.html' : '/index.html';
     event.respondWith(
-      fetch(request).catch(() => caches.match('/index.html').then((r) => r || Response.error()))
+      fetch(request).catch(() => caches.match(shell).then((r) => r || Response.error()))
     );
     return;
   }

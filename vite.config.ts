@@ -22,7 +22,12 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     sourcemap: true,
-    target: 'chrome120'
+    target: 'chrome120',
+    // Entry do app é app.html (servido em /app na web; a raiz é a landing
+    // estática em public/index.html, copiada pro dist sem passar pelo bundler).
+    rollupOptions: {
+      input: path.resolve(__dirname, 'app.html')
+    }
   },
   server: {
     port: 5173,

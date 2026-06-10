@@ -12,7 +12,7 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       { "source": "/api/google/callback", "function": { "functionId": "googleOAuthCallback", "region": "us-central1" } },
-      { "source": "**", "destination": "/index.html" }
+      { "source": "**", "destination": "/app.html" }
     ],
     "headers": [
       {
@@ -21,6 +21,10 @@
       },
       {
         "source": "/index.html",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      },
+      {
+        "source": "/app.html",
         "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
       },
       {

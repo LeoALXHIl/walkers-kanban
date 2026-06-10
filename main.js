@@ -247,24 +247,25 @@ function createWindow() {
   // because Firebase Auth's Google sign-in rejects file:// origins.
   const isDev = !app.isPackaged && process.env.NODE_ENV === 'development';
   if (isDev) {
-    mainWindow.loadURL('http://localhost:5173');
+    // Entry do app agora é app.html (a raiz do site é a landing estática)
+    mainWindow.loadURL('http://localhost:5173/app.html');
   } else {
     const distDir = path.join(__dirname, 'dist');
-    const distIndex = path.join(distDir, 'index.html');
+    const distIndex = path.join(distDir, 'app.html');
     const useDist = fs.existsSync(distIndex);
     const serveRoot = useDist ? distDir : __dirname;
     startLocalServer(serveRoot)
       .then(({ server, port }) => {
         localServer = server;
         localServerPort = port;
-        const url = `http://localhost:${port}/`;
+        const url = `http://localhost:${port}/app.html`;
         console.log('[walkers] Local server:', url, 'serving', serveRoot);
         mainWindow.loadURL(url);
       })
       .catch(err => {
         console.error('[walkers] Local server failed to start, falling back to file://', err);
         if (useDist) mainWindow.loadFile(distIndex);
-        else mainWindow.loadFile('index.html');
+        else mainWindow.loadFile('app.html');
       });
   }
   mainWindow.once('ready-to-show', () => mainWindow.show());
