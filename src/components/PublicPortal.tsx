@@ -82,8 +82,14 @@ export function PublicPortal({ slug, token = '' }: { slug: string; token?: strin
   const pct = total ? Math.round((doneCount / total) * 100) : 0;
   const approvedSet = new Set((share.approvals || []).map(a => a.cardId));
 
-  const approve = async (cardId: string) => {
-    const name = window.prompt('Seu nome (pra registrar a aprovação):') || 'Cliente';
+  // Aprovação inline: 1º clique abre o campo de nome (pré-preenchido com o
+  // último usado nos comentários); confirmar registra. Sem window.prompt.
+  const [approving, setApproving] = useState<string | null>(null);
+  const [approverName, setApproverName] = useState(() => localStorage.getItem('portal.name') || '');
+  const confirmApprove = async (cardId: string) => {
+    const name = approverName.trim() || 'Cliente';
+    localStorage.setItem('portal.name', name);
+    setApproving(null);
     await recordApproval(slug, cardId, name);
   };
 
@@ -156,7 +162,20 @@ export function PublicPortal({ slug, token = '' }: { slug: string; token?: strin
                   {share.allowApprovals && (
                     approved
                       ? <div style={{ marginTop: 10, fontSize: 12, color: '#16a34a', fontWeight: 600 }}>✓ Você aprovou esta etapa</div>
-                      : <button onClick={() => approve(c.id)} style={{ ...btnGhost(accent), marginTop: 10 }}>Aprovar esta etapa</button>
+                      : approving === c.id
+                        ? (
+                          <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                            <input
+                              autoFocus value={approverName} placeholder="Seu nome" aria-label="Seu nome pra registrar a aprovação"
+                              onChange={(e) => setApproverName(e.target.value)}
+                              onKeyDown={(e) => { if (e.key === 'Enter') confirmApprove(c.id); if (e.key === 'Escape') setApproving(null); }}
+                              style={{ ...inp, width: 180 }}
+                            />
+                            <button onClick={() => confirmApprove(c.id)} style={btn(accent)}>Confirmar ✓</button>
+                            <button onClick={() => setApproving(null)} style={btnGhost('#99a')}>Cancelar</button>
+                          </div>
+                        )
+                        : <button onClick={() => setApproving(c.id)} style={{ ...btnGhost(accent), marginTop: 10 }}>Aprovar esta etapa</button>
                   )}
                 </div>
               );
@@ -184,8 +203,14 @@ export function PublicPortal({ slug, token = '' }: { slug: string; token?: strin
           </div>
         )}
         {(share.branding?.showWalkersBrand ?? true) ? (
-          <div style={{ textAlign: 'center', fontSize: 11, color: '#b6b9c8', marginTop: 10 }}>
-            Powered by <strong>Walkers Kanban</strong>
+          <div style={{ textAlign: 'center', fontSize: 11, color: '#8890a6', marginTop: 10 }}>
+            Feito com{' '}
+            <a
+              href="https://walkerskambam.web.app/?utm_source=portal&utm_medium=footer&utm_campaign=powered_by"
+              target="_blank" rel="noopener noreferrer"
+              style={{ color: accent, fontWeight: 700, textDecoration: 'none' }}
+            >Walkers Kanban</a>
+            {' '}— organize seus clientes grátis
           </div>
         ) : share.branding?.brandName ? (
           <div style={{ textAlign: 'center', fontSize: 11, color: '#b6b9c8', marginTop: 10 }}>

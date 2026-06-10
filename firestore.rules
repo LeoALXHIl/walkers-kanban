@@ -69,6 +69,19 @@ service cloud.firestore {
     }
 
     // ──────────────────────────────────────────────────────
+    // Lista de espera do plano Pro (landing). Qualquer visitante pode
+    // se inscrever (create), mas ninguém lê/edita pelo cliente — só o
+    // dono via console/Admin SDK. Payload limitado pra evitar abuso.
+    // ──────────────────────────────────────────────────────
+    match /waitlist/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['email', 'plan', 'ts'])
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() >= 5
+                    && request.resource.data.email.size() <= 120;
+      allow read, update, delete: if false;
+    }
+
+    // ──────────────────────────────────────────────────────
     // Portal público do cliente (publicShares/{slug})
     // Leitura pública (cliente sem login acessa pelo slug).
     // Escrita do doc só pelo dono. Comentários: qualquer um com o slug.

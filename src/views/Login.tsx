@@ -91,6 +91,7 @@ export function AuthCard({ initialMode = 'login' }: { initialMode?: Mode }) {
           type="email"
           className="auth-input"
           placeholder="Seu email"
+          aria-label="Email"
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -100,6 +101,7 @@ export function AuthCard({ initialMode = 'login' }: { initialMode?: Mode }) {
           type="password"
           className="auth-input"
           placeholder="Sua senha (mín. 6)"
+          aria-label="Senha (mínimo 6 caracteres)"
           autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -111,6 +113,7 @@ export function AuthCard({ initialMode = 'login' }: { initialMode?: Mode }) {
             type="password"
             className="auth-input"
             placeholder="Confirme a senha"
+            aria-label="Confirme a senha"
             autoComplete="new-password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}

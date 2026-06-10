@@ -18,6 +18,7 @@ import { StreakBadge } from './StreakBadge';
 import { OnlineBadge } from './OnlineBadge';
 import type { ViewKey } from '@/types';
 import { GMAIL_ENABLED } from '@/services/firebase';
+import { isWebMode } from '@/services/browserBridge';
 
 export function Sidebar() {
   const view = useUI(s => s.view);
@@ -174,7 +175,7 @@ export function Sidebar() {
           <div key={g.title}>
             <div className="sb-section">{g.title}</div>
             {g.items.map(it => (
-              <button key={it.key} data-tour={it.key} className={`sb-item${view === it.key ? ' active' : ''}`} onClick={() => setView(it.key)} title={collapsed ? it.label : undefined}>
+              <button key={it.key} data-tour={it.key} className={`sb-item${view === it.key ? ' active' : ''}`} onClick={() => setView(it.key)} title={collapsed ? it.label : undefined} aria-current={view === it.key ? 'page' : undefined}>
                 {it.icon}
                 <span className="sb-item-label">{it.label}</span>
                 {it.badge !== undefined && <span className={`sb-badge${it.alert ? ' alert' : ''}`}>{it.badge}</span>}
@@ -185,14 +186,20 @@ export function Sidebar() {
       </nav>
       <div className="sb-footer">
         <UserChip />
-        <button className="sb-foot-btn" onClick={openMcpInfo} title={collapsed ? 'MCP / Claude' : undefined}>
-          <McpIcon />
-          <span>MCP / Claude</span>
-        </button>
-        <button className="sb-foot-btn" onClick={() => window.walkersAPI.showDataFolder()} title={collapsed ? 'Abrir pasta local' : undefined}>
-          <FolderIcon />
-          <span>Abrir pasta local</span>
-        </button>
+        {/* Itens técnicos do desktop: no modo web "Abrir pasta local" é no-op
+            (shim) e MCP exige o app instalado — esconde pra não confundir. */}
+        {!isWebMode() && (
+          <>
+            <button className="sb-foot-btn" onClick={openMcpInfo} title={collapsed ? 'MCP / Claude' : undefined}>
+              <McpIcon />
+              <span>MCP / Claude</span>
+            </button>
+            <button className="sb-foot-btn" onClick={() => window.walkersAPI.showDataFolder()} title={collapsed ? 'Abrir pasta local' : undefined}>
+              <FolderIcon />
+              <span>Abrir pasta local</span>
+            </button>
+          </>
+        )}
         <OnlineBadge collapsed={collapsed} />
       </div>
     </aside>
