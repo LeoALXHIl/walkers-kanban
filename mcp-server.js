@@ -150,9 +150,10 @@ function dataToFields(data) {
   return fields;
 }
 
-async function fetchFirestoreDoc(authData) {
-  const url = `https://firestore.googleapis.com/v1/projects/${authData.projectId}/databases/(default)/documents/users/${authData.uid}/kanban/main`;
-  const res = await fetch(url, { headers: { Authorization: `Bearer ${authData.idToken}` } });
+const FS_DOCS = (a) => `https://firestore.googleapis.com/v1/projects/${a.projectId}/databases/(default)/documents`;
+
+async function fsGetDoc(authData, relPath) {
+  const res = await fetch(`${FS_DOCS(authData)}/${relPath}`, { headers: { Authorization: `Bearer ${authData.idToken}` } });
   if (res.status === 404) return null;
   if (!res.ok) {
     const text = await res.text().catch(() => '');
@@ -161,9 +162,8 @@ async function fetchFirestoreDoc(authData) {
   return docToData(await res.json());
 }
 
-async function writeFirestoreDoc(authData, data) {
-  const url = `https://firestore.googleapis.com/v1/projects/${authData.projectId}/databases/(default)/documents/users/${authData.uid}/kanban/main`;
-  const res = await fetch(url, {
+async function fsPatchDoc(authData, relPath, data) {
+  const res = await fetch(`${FS_DOCS(authData)}/${relPath}`, {
     method: 'PATCH',
     headers: {
       Authorization: `Bearer ${authData.idToken}`,
@@ -175,6 +175,35 @@ async function writeFirestoreDoc(authData, data) {
     const text = await res.text().catch(() => '');
     throw new Error(`Firestore PATCH ${res.status}: ${text.slice(0, 200)}`);
   }
+}
+
+// Resolve which kanban doc holds the user's cards. Since v4.19 the app stores data
+// at workspaces/{currentWorkspaceId}/kanban/main (multi-user model). The old
+// users/{uid}/kanban/main is a legacy orphan only touched during one-time migration —
+// writing there makes edits invisible to the app. Read the profile to find the active
+// workspace; fall back to legacy if there's no profile/workspace. Cached per process.
+let kanbanRelPath = null;
+async function resolveKanbanPath(authData) {
+  if (kanbanRelPath) return kanbanRelPath;
+  const legacy = `users/${authData.uid}/kanban/main`;
+  try {
+    const profile = await fsGetDoc(authData, `users/${authData.uid}/profile/main`);
+    const wsId = profile && profile.currentWorkspaceId;
+    kanbanRelPath = wsId ? `workspaces/${wsId}/kanban/main` : legacy;
+    if (wsId) logErr('Using workspace doc:', kanbanRelPath);
+  } catch (e) {
+    logErr('resolveKanbanPath falhou, usando legado:', e.message);
+    kanbanRelPath = legacy;
+  }
+  return kanbanRelPath;
+}
+
+async function fetchFirestoreDoc(authData) {
+  return fsGetDoc(authData, await resolveKanbanPath(authData));
+}
+
+async function writeFirestoreDoc(authData, data) {
+  await fsPatchDoc(authData, await resolveKanbanPath(authData), data);
 }
 
 // ─── Data layer (Firestore-first, local fallback) ─────────────────────
@@ -195,6 +224,7 @@ async function loadData(force = false) {
 
   if (authData) {
     try {
+      if (force) kanbanRelPath = null;
       if (!force && cache && Date.now() - cacheAt < CACHE_TTL_MS) return cache;
       const remote = await fetchFirestoreDoc(authData);
       const data = migrate(remote || JSON.parse(JSON.stringify(DEFAULT_DATA)));
