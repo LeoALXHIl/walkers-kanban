@@ -1,7 +1,7 @@
 import { useUI } from '@/store/ui';
 import { useData, deleteCard, deleteColumn, archiveCard } from '@/store/data';
 import { useNotifications } from '@/store/notifications';
-import { toast } from '@/services/toast';
+import { undoToast } from '@/services/undo';
 
 export function DeleteCardModal() {
   const delCardId = useUI(s => s.delCardId);
@@ -14,17 +14,17 @@ export function DeleteCardModal() {
   const doArchive = () => {
     if (card) {
       archiveCard(card.id, true);
-      toast.success(`"${card.name}" foi pro arquivo`, { icon: '📦', durationMs: 3000 });
+      undoToast(`"${card.name}" foi pro arquivo`, { icon: '📦' });
     }
     cancel();
   };
 
   const doDelete = () => {
     if (!card) return;
-    if (!confirm(`Apagar PERMANENTEMENTE "${card.name}"? Isso não pode ser desfeito.`)) return;
+    const name = card.name;
     deleteCard(card.id);
-    addNotif({ type: 'delete', icon: '🗑️', title: `Card removido: ${card.name}`, sub: 'Ação irreversível', ts: Date.now() });
-    toast.warn(`Card "${card.name}" apagado permanentemente`, { icon: '🗑️' });
+    addNotif({ type: 'delete', icon: '🗑️', title: `Card removido: ${name}`, sub: 'Dava pra desfazer logo após', ts: Date.now() });
+    undoToast(`Card "${name}" excluído`, { icon: '🗑️' });
     cancel();
   };
 
@@ -34,11 +34,11 @@ export function DeleteCardModal() {
         <h2>O que fazer com "{card?.name}"?</h2>
         <p>
           <strong>Arquivar</strong> tira o card da vista mas mantém os dados — você pode recuperar depois em "Arquivo".<br /><br />
-          <strong>Apagar</strong> é definitivo e não pode ser desfeito.
+          <strong>Apagar</strong> remove o card — dá pra desfazer logo em seguida pelo botão no aviso.
         </p>
         <div className="mfoot" style={{ gap: 6 }}>
           <button className="btn btn-ghost" onClick={cancel}>Cancelar</button>
-          <button className="btn btn-danger" onClick={doDelete} style={{ background: 'transparent', color: 'var(--red)', border: '1px solid var(--red)' }}>Apagar permanente</button>
+          <button className="btn btn-danger" onClick={doDelete} style={{ background: 'transparent', color: 'var(--red)', border: '1px solid var(--red)' }}>Apagar</button>
           <button className="btn btn-primary" onClick={doArchive}>📦 Arquivar</button>
         </div>
       </div>
@@ -57,7 +57,7 @@ export function DeleteColumnModal() {
   const confirm = () => {
     const result = deleteColumn(col.id);
     cancel();
-    toast.warn(
+    undoToast(
       result.movedCount > 0
         ? `Coluna "${result.name}" excluída — ${result.movedCount} card(s) movido(s)`
         : `Coluna "${result.name}" excluída`,

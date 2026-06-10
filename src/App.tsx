@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '@/store/auth';
 import { useData } from '@/store/data';
 import { useUI, anyModalOpen, getViewForBoard, rememberViewForBoard } from '@/store/ui';
@@ -9,23 +9,26 @@ import { Landing } from '@/views/Landing';
 import { Sidebar } from '@/components/Sidebar';
 import { Topbar } from '@/components/Topbar';
 import { KanbanView } from '@/views/Kanban';
-import { ListView } from '@/views/List';
-import { DashboardView } from '@/views/Dashboard';
-import { InboxView } from '@/views/Inbox';
-import { MyTasksView } from '@/views/MyTasks';
-import { ClientsView } from '@/views/Clients';
-import { AnalyticsView } from '@/views/Analytics';
-import { IntegrationsView } from '@/views/Integrations';
-import { CalendarView } from '@/views/Calendar';
-import { EmailsView } from '@/views/Emails';
 import { EventDetailModal } from '@/components/EventDetailModal';
-import { ArchiveView } from '@/views/Archive';
-import { TemplatesView } from '@/views/Templates';
-import { SnoozedView } from '@/views/Snoozed';
-import { StarredView } from '@/views/Starred';
-import { GoalsView } from '@/views/Goals';
-import { SprintsView } from '@/views/Sprints';
-import { RoadmapView } from '@/views/Roadmap';
+import { ViewSkeleton } from '@/components/ViewSkeleton';
+// Usab-4: code-split — as views secundárias carregam sob demanda (lazy) atrás de um
+// Suspense skeleton, mantendo o bundle inicial (login → Kanban) pequeno e o boot rápido.
+const ListView = lazy(() => import('@/views/List').then(m => ({ default: m.ListView })));
+const DashboardView = lazy(() => import('@/views/Dashboard').then(m => ({ default: m.DashboardView })));
+const InboxView = lazy(() => import('@/views/Inbox').then(m => ({ default: m.InboxView })));
+const MyTasksView = lazy(() => import('@/views/MyTasks').then(m => ({ default: m.MyTasksView })));
+const ClientsView = lazy(() => import('@/views/Clients').then(m => ({ default: m.ClientsView })));
+const AnalyticsView = lazy(() => import('@/views/Analytics').then(m => ({ default: m.AnalyticsView })));
+const IntegrationsView = lazy(() => import('@/views/Integrations').then(m => ({ default: m.IntegrationsView })));
+const CalendarView = lazy(() => import('@/views/Calendar').then(m => ({ default: m.CalendarView })));
+const EmailsView = lazy(() => import('@/views/Emails').then(m => ({ default: m.EmailsView })));
+const ArchiveView = lazy(() => import('@/views/Archive').then(m => ({ default: m.ArchiveView })));
+const TemplatesView = lazy(() => import('@/views/Templates').then(m => ({ default: m.TemplatesView })));
+const SnoozedView = lazy(() => import('@/views/Snoozed').then(m => ({ default: m.SnoozedView })));
+const StarredView = lazy(() => import('@/views/Starred').then(m => ({ default: m.StarredView })));
+const GoalsView = lazy(() => import('@/views/Goals').then(m => ({ default: m.GoalsView })));
+const SprintsView = lazy(() => import('@/views/Sprints').then(m => ({ default: m.SprintsView })));
+const RoadmapView = lazy(() => import('@/views/Roadmap').then(m => ({ default: m.RoadmapView })));
 import { FilterChips } from '@/components/FilterChips';
 import { CheatsheetModal } from '@/components/CheatsheetModal';
 import { ClientDetailModal } from '@/components/ClientDetailModal';
@@ -424,23 +427,25 @@ export function App() {
           <Topbar />
           {(view === 'kanban' || view === 'list') && <FilterChips />}
           <div className="content">
-            {view === 'kanban' && <KanbanView />}
-            {view === 'list' && <ListView />}
-            {view === 'dashboard' && <DashboardView />}
-            {view === 'inbox' && <InboxView />}
-            {view === 'mytasks' && <MyTasksView />}
-            {view === 'clients' && <ClientsView />}
-            {view === 'analytics' && <AnalyticsView />}
-            {view === 'integrations' && <IntegrationsView />}
-            {view === 'calendar' && <CalendarView />}
-            {view === 'emails' && <EmailsView />}
-            {view === 'archive' && <ArchiveView />}
-            {view === 'templates' && <TemplatesView />}
-            {view === 'snoozed' && <SnoozedView />}
-            {view === 'starred' && <StarredView />}
-            {view === 'goals' && <GoalsView />}
-            {view === 'sprints' && <SprintsView />}
-            {view === 'roadmap' && <RoadmapView />}
+            <Suspense fallback={<ViewSkeleton />}>
+              {view === 'kanban' && <KanbanView />}
+              {view === 'list' && <ListView />}
+              {view === 'dashboard' && <DashboardView />}
+              {view === 'inbox' && <InboxView />}
+              {view === 'mytasks' && <MyTasksView />}
+              {view === 'clients' && <ClientsView />}
+              {view === 'analytics' && <AnalyticsView />}
+              {view === 'integrations' && <IntegrationsView />}
+              {view === 'calendar' && <CalendarView />}
+              {view === 'emails' && <EmailsView />}
+              {view === 'archive' && <ArchiveView />}
+              {view === 'templates' && <TemplatesView />}
+              {view === 'snoozed' && <SnoozedView />}
+              {view === 'starred' && <StarredView />}
+              {view === 'goals' && <GoalsView />}
+              {view === 'sprints' && <SprintsView />}
+              {view === 'roadmap' && <RoadmapView />}
+            </Suspense>
           </div>
         </div>
       </div>
