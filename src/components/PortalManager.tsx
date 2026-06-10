@@ -6,6 +6,8 @@ import { useData } from '@/store/data';
 import { createShare, updateShare, revokeShare, getShare, subscribeShare, subscribeComments, hashPin, portalUrl, genToken, buildSnapshot, pushSnapshot, type CreateShareOpts } from '@/services/publicShares';
 import { toast } from '@/services/toast';
 import { fmtTime } from '@/services/storage';
+import { usePlan, planLimits } from '@/services/plan';
+import { useUpgrade } from './UpgradeModal';
 import type { PublicShare, PublicShareField, PublicShareComment, Card } from '@/types';
 
 const FIELD_OPTIONS: Array<{ v: PublicShareField; label: string; desc: string }> = [
@@ -255,6 +257,9 @@ function ShareForm({ existing, clientKey, clientDisplayName, clientCards, worksp
   const [brandName, setBrandName] = useState(existing?.branding?.brandName || '');
   const [showBrand, setShowBrand] = useState(existing?.branding?.showWalkersBrand ?? true);
   const [submitting, setSubmitting] = useState(false);
+  // White-label (logo, nome da marca, tirar "Feito com Walkers") = Pro
+  const plan = usePlan(s => s.plan);
+  const wl = planLimits(plan).whiteLabel;
 
   const toggleField = (f: PublicShareField) => {
     setFields(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
@@ -286,9 +291,9 @@ function ShareForm({ existing, clientKey, clientDisplayName, clientCards, worksp
         allowApprovals,
         branding: {
           primaryColor,
-          logoUrl: logoUrl.trim() || undefined,
-          brandName: brandName.trim() || undefined,
-          showWalkersBrand: showBrand,
+          logoUrl: wl ? (logoUrl.trim() || undefined) : undefined,
+          brandName: wl ? (brandName.trim() || undefined) : undefined,
+          showWalkersBrand: wl ? showBrand : true,
           welcomeMessage: welcomeMessage.trim() || undefined,
           contactPhone: contactPhone.trim() || undefined,
           contactEmail: contactEmail.trim() || undefined
@@ -400,14 +405,22 @@ function ShareForm({ existing, clientKey, clientDisplayName, clientCards, worksp
       </div>
 
       <details style={{ marginTop: 8, marginBottom: 14 }}>
-        <summary style={{ cursor: 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text2)' }}>🎨 Branding (white-label)</summary>
+        <summary style={{ cursor: 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text2)' }}>
+          🎨 Branding (white-label){!wl && <span className="pro-chip">✨ Pro</span>}
+        </summary>
+        {!wl && (
+          <div className="pro-locked-note">
+            Logo, nome da marca e remover o "Feito com Walkers" são do plano Pro.{' '}
+            <button className="auth-link" style={{ fontSize: 12 }} onClick={() => useUpgrade.getState().show('whitelabel')}>Fazer upgrade →</button>
+          </div>
+        )}
         <div className="frow" style={{ marginTop: 8 }}>
           <label className="flabel">Nome da sua marca</label>
-          <input className="finput" placeholder="Ex.: Studio Leo Digital" value={brandName} onChange={(e) => setBrandName(e.target.value)} />
+          <input className="finput" placeholder="Ex.: Studio Leo Digital" value={brandName} disabled={!wl} onChange={(e) => setBrandName(e.target.value)} />
         </div>
         <div className="frow">
           <label className="flabel">Logo (URL da imagem)</label>
-          <input className="finput" type="url" placeholder="https://.../logo.png" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} />
+          <input className="finput" type="url" placeholder="https://.../logo.png" value={logoUrl} disabled={!wl} onChange={(e) => setLogoUrl(e.target.value)} />
           {logoUrl.trim() && (
             <img src={logoUrl} alt="" style={{ height: 32, marginTop: 8, borderRadius: 4 }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           )}
@@ -428,9 +441,9 @@ function ShareForm({ existing, clientKey, clientDisplayName, clientCards, worksp
           <label className="flabel">Email de contato</label>
           <input className="finput" type="email" placeholder="leo@walkers.app" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
         </div>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, marginTop: 4 }}>
-          <input type="checkbox" checked={showBrand} onChange={(e) => setShowBrand(e.target.checked)} />
-          Mostrar "Powered by Walkers" no rodapé
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, marginTop: 4, opacity: wl ? 1 : .55 }}>
+          <input type="checkbox" checked={wl ? showBrand : true} disabled={!wl} onChange={(e) => setShowBrand(e.target.checked)} />
+          Mostrar "Feito com Walkers" no rodapé
         </label>
       </details>
 

@@ -58,6 +58,8 @@ import { WelcomeModal } from '@/components/WelcomeModal';
 import { GuidedTour } from '@/components/GuidedTour';
 import { QuickPromptModal } from '@/components/QuickPromptModal';
 import { WorkspaceModal, JoinWorkspaceModal, NewWorkspaceModal } from '@/components/WorkspaceModal';
+import { UpgradeModal } from '@/components/UpgradeModal';
+import { usePlan } from '@/services/plan';
 import { Toast } from '@/components/Toast';
 import { aggregate, effectiveStreak, streakAtRisk, todayStr, weekId } from '@/services/streak';
 import { migrateData } from '@/services/storage';
@@ -129,6 +131,7 @@ export function App() {
   useEffect(() => {
     if (!authReady) return;
     if (user) {
+      usePlan.getState().init(user.uid);
       // bootForUser handles workspace migration internally. AFTER it finishes,
       // we sync the workspace store so the switcher actually shows up.
       bootForUser(user.uid).then(() => {
@@ -150,6 +153,7 @@ export function App() {
         }
       });
     } else {
+      usePlan.getState().teardown();
       teardown();
     }
   }, [user, authReady]);
@@ -482,6 +486,7 @@ export function App() {
       <ActivationChecklist />
       <WelcomeModal />
       <GuidedTour />
+      <UpgradeModal />
     </>
   );
 }

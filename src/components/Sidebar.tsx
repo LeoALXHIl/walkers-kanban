@@ -20,6 +20,8 @@ import type { ViewKey } from '@/types';
 import { GMAIL_ENABLED } from '@/services/firebase';
 import { isWebMode } from '@/services/browserBridge';
 import { useMobileNav } from '@/components/MobileNav';
+import { usePlan } from '@/services/plan';
+import { useUpgrade } from './UpgradeModal';
 
 export function Sidebar() {
   const view = useUI(s => s.view);
@@ -186,6 +188,7 @@ export function Sidebar() {
         ))}
       </nav>
       <div className="sb-footer">
+        <UpgradeCta collapsed={collapsed} />
         <UserChip />
         {/* Itens técnicos do desktop: no modo web "Abrir pasta local" é no-op
             (shim) e MCP exige o app instalado — esconde pra não confundir. */}
@@ -297,6 +300,22 @@ function WorkspaceSwitcher() {
         </div>
       )}
     </div>
+  );
+}
+
+function UpgradeCta({ collapsed }: { collapsed: boolean }) {
+  const plan = usePlan(s => s.plan);
+  const loaded = usePlan(s => s.loaded);
+  if (!loaded || plan !== 'free') return null;
+  return (
+    <button
+      className="sb-upgrade"
+      onClick={() => useUpgrade.getState().show('generic')}
+      title={collapsed ? 'Fazer upgrade pro Pro' : undefined}
+    >
+      <span>✨</span>
+      <span className="sb-item-label">Fazer upgrade</span>
+    </button>
   );
 }
 

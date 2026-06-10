@@ -69,6 +69,19 @@ service cloud.firestore {
     }
 
     // ──────────────────────────────────────────────────────
+    // Plano de assinatura do usuário (billing MVP sem backend).
+    // Lido pelo próprio usuário; gravado SÓ pelo admin (ativação manual
+    // pós-pagamento no Mercado Pago, até existir webhook via Functions).
+    // ──────────────────────────────────────────────────────
+    match /plans/{uid} {
+      allow read: if request.auth != null
+                  && (request.auth.uid == uid
+                      || request.auth.uid == 'QAJ08ZLj9nPj5DMjn1j97jLEL102');
+      allow write: if request.auth != null
+                   && request.auth.uid == 'QAJ08ZLj9nPj5DMjn1j97jLEL102';
+    }
+
+    // ──────────────────────────────────────────────────────
     // Lista de espera do plano Pro (landing). Qualquer visitante pode
     // se inscrever (create), mas ninguém lê/edita pelo cliente — só o
     // dono via console/Admin SDK. Payload limitado pra evitar abuso.

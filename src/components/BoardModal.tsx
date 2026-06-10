@@ -3,6 +3,8 @@ import { useUI } from '@/store/ui';
 import { useData, addBoard, updateBoard, deleteBoard } from '@/store/data';
 import { COL_COLORS } from '@/services/colors';
 import { toast } from '@/services/toast';
+import { usePlan, planLimits } from '@/services/plan';
+import { useUpgrade } from './UpgradeModal';
 
 const EMOJIS = ['🚀', '🎯', '💼', '🏠', '📚', '💡', '🛠️', '🎨', '🔥', '⚡', '🌟', '📋'];
 
@@ -39,6 +41,15 @@ export function BoardModal() {
   const save = () => {
     const t = name.trim();
     if (!t) { setErr(true); setTimeout(() => setErr(false), 1000); return; }
+    // Gating de plano: Free = 1 board (criação; editar continua livre)
+    if (!editing) {
+      const { plan } = usePlan.getState();
+      if (boards.length >= planLimits(plan).boards) {
+        close();
+        useUpgrade.getState().show('boards');
+        return;
+      }
+    }
     if (editing) {
       updateBoard(editing.id, { name: t, emoji, color });
       toast.success('Board atualizado');
