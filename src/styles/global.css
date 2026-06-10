@@ -161,6 +161,7 @@ body {
   background: var(--bg);
   color: var(--text);
   height: 100vh;
+  height: 100dvh; /* mobile: acompanha a barra do navegador (fallback acima) */
   overflow: hidden;
 }
 
@@ -171,6 +172,7 @@ body {
 #root, .app {
   display: flex;
   height: 100vh;
+  height: 100dvh;
 }
 
 /* ─── Sidebar ─── */
@@ -1494,3 +1496,98 @@ button { transition: transform .08s ease, background .12s ease, border-color .12
 .user-chip-logout { background: transparent; border: none; color: var(--text3); cursor: pointer; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 4px; flex-shrink: 0; }
 .user-chip-logout:hover { background: var(--bg4); color: var(--text); }
 .user-chip-logout svg { width: 12px; height: 12px; }
+
+/* ════════════════════════════════════════════════════════════
+   MOBILE (≤768px) — Fase 2 da auditoria UX.
+   Shell: sidebar vira drawer, bottom nav fixa, topbar enxuta,
+   kanban com scroll-snap horizontal, modais viram bottom-sheet.
+   ════════════════════════════════════════════════════════════ */
+.tb-burger { display: none; }
+.mobile-nav { display: none; }
+.mobile-backdrop { display: none; }
+
+@media (max-width: 768px) {
+  /* ── Sidebar → drawer ── */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 320;
+    width: min(300px, 84vw) !important;
+    transform: translateX(-105%);
+    transition: transform .22s ease;
+    box-shadow: 0 0 60px rgba(0,0,0,.5);
+  }
+  .app.mobile-nav-open .sidebar { transform: none; }
+  /* o modo "collapsed" do desktop não se aplica no drawer */
+  .sidebar.collapsed .sb-title, .sidebar.collapsed .sb-sync span,
+  .sidebar.collapsed .board-switcher, .sidebar.collapsed .sb-section,
+  .sidebar.collapsed .sb-badge, .sidebar.collapsed .sb-item-label,
+  .sidebar.collapsed .sb-foot-btn > span, .sidebar.collapsed .streak-badge .streak-text,
+  .sidebar.collapsed .user-chip-name, .sidebar.collapsed .user-chip-email { display: revert !important; }
+  .sidebar.collapsed .sb-item, .sidebar.collapsed .sb-foot-btn { justify-content: flex-start; padding: 10px 12px; }
+  .sidebar-toggle { display: none !important; }
+
+  .mobile-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 310;
+    background: rgba(0,0,0,.55); backdrop-filter: blur(2px);
+    animation: fadeIn .15s ease;
+  }
+
+  /* ── Bottom nav ── */
+  .mobile-nav {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 300;
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .mn-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    background: transparent; border: none; padding: 8px 4px 9px;
+    color: var(--text3); font-family: inherit; font-size: 10px; cursor: pointer;
+  }
+  .mn-item svg { width: 19px; height: 19px; }
+  .mn-item.active { color: var(--accent); }
+  .main { padding-bottom: calc(54px + env(safe-area-inset-bottom)); }
+
+  /* ── Topbar enxuta ── */
+  .tb-burger { display: inline-flex; }
+  .topbar { padding: 0 10px; gap: 8px; }
+  .tb-view-sub { display: none; }
+  .tb-right { gap: 4px; }
+  .tb-right .cmdk-btn, .tb-right .search-wrap, .tb-right .filter-sel,
+  .tb-hide-mobile { display: none !important; }
+  .tb-right .btn-primary { padding: 8px 12px; }
+
+  /* filtros viram linha rolável */
+  .filter-chips { flex-wrap: nowrap; overflow-x: auto; padding: 8px 12px; }
+  .filter-chips::-webkit-scrollbar { display: none; }
+
+  /* ── Kanban: 1 coluna por tela, swipe com snap ── */
+  .content:has(> .board) { scroll-snap-type: x mandatory; }
+  .board { padding: 12px 12px 24px; gap: 10px; }
+  .column {
+    width: min(86vw, 340px);
+    scroll-snap-align: center;
+  }
+  .btn-add-col { width: 120px; min-height: 70px; scroll-snap-align: center; }
+
+  /* alvos de toque maiores */
+  .sb-item { padding: 10px 12px; }
+  .icon-btn { min-width: 32px; min-height: 32px; }
+
+  /* ── Modais → bottom sheet ── */
+  .overlay { align-items: flex-end; }
+  .modal, .detail-modal {
+    width: 100% !important; max-width: 100% !important; min-width: 0 !important;
+    border-radius: 16px 16px 0 0; border-bottom: none;
+    max-height: 92dvh;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    animation: sheetUp .2s ease;
+  }
+  .detail-modal { padding-bottom: 0; }
+  .detail-body { grid-template-columns: 1fr; }
+  .detail-side { order: -1; flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .detail-side .side-field { flex: 1 1 45%; min-width: 130px; }
+
+  /* palette centralizada no topo já tem overlay próprio (.palette-overlay) */
+  .palette-overlay { padding-top: 4vh; }
+}
+
+@keyframes sheetUp { from { transform: translateY(24px); opacity: .6; } to { transform: none; opacity: 1; } }

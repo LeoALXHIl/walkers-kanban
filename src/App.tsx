@@ -8,6 +8,7 @@ import { useWorkspace } from '@/store/workspace';
 import { Landing } from '@/views/Landing';
 import { Sidebar } from '@/components/Sidebar';
 import { Topbar } from '@/components/Topbar';
+import { MobileNav, useMobileNav } from '@/components/MobileNav';
 import { KanbanView } from '@/views/Kanban';
 import { EventDetailModal } from '@/components/EventDetailModal';
 import { ViewSkeleton } from '@/components/ViewSkeleton';
@@ -79,6 +80,7 @@ export function App() {
   const togglePalette = useUI(s => s.togglePalette);
   const openWrapModal = useUI(s => s.openWrapModal);
   const openOcr = useUI(s => s.openOcr);
+  const mobileNavOpen = useMobileNav(s => s.open);
 
   // Theme init (loads stored preference, applies CSS vars, watches OS changes)
   useEffect(() => { useTheme.getState().init(); }, []);
@@ -421,8 +423,9 @@ export function App() {
 
   return (
     <>
-      <div className="app">
+      <div className={`app${mobileNavOpen ? ' mobile-nav-open' : ''}`}>
         <Sidebar />
+        <MobileNav />
         <div className="main">
           <Topbar />
           {(view === 'kanban' || view === 'list') && <FilterChips />}

@@ -19,6 +19,7 @@ import { OnlineBadge } from './OnlineBadge';
 import type { ViewKey } from '@/types';
 import { GMAIL_ENABLED } from '@/services/firebase';
 import { isWebMode } from '@/services/browserBridge';
+import { useMobileNav } from '@/components/MobileNav';
 
 export function Sidebar() {
   const view = useUI(s => s.view);
@@ -175,7 +176,7 @@ export function Sidebar() {
           <div key={g.title}>
             <div className="sb-section">{g.title}</div>
             {g.items.map(it => (
-              <button key={it.key} data-tour={it.key} className={`sb-item${view === it.key ? ' active' : ''}`} onClick={() => setView(it.key)} title={collapsed ? it.label : undefined} aria-current={view === it.key ? 'page' : undefined}>
+              <button key={it.key} data-tour={it.key} className={`sb-item${view === it.key ? ' active' : ''}`} onClick={() => { setView(it.key); useMobileNav.getState().set(false); }} title={collapsed ? it.label : undefined} aria-current={view === it.key ? 'page' : undefined}>
                 {it.icon}
                 <span className="sb-item-label">{it.label}</span>
                 {it.badge !== undefined && <span className={`sb-badge${it.alert ? ' alert' : ''}`}>{it.badge}</span>}

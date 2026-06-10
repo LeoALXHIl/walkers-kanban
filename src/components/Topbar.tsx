@@ -1,4 +1,5 @@
 import { useUI } from '@/store/ui';
+import { useMobileNav } from '@/components/MobileNav';
 import { SearchIcon, PlusIcon, ColumnIcon } from '@/services/icons';
 import { usePermissions } from '@/services/permissions';
 import type { ViewKey, Platform, Priority } from '@/types';
@@ -45,6 +46,15 @@ export function Topbar() {
   return (
     <div className="topbar">
       <div className="tb-left">
+        <button
+          className="tb-burger icon-btn"
+          aria-label="Abrir menu"
+          onClick={() => useMobileNav.getState().set(!useMobileNav.getState().open)}
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
         <div>
           <div className="tb-view-title">{title}</div>
           <div className="tb-view-sub">{sub}</div>
@@ -91,13 +101,13 @@ export function Topbar() {
             <path d="m3 17 5-5 4 4 3-3 6 6"/>
           </svg>
         </button>
-        <button className="btn btn-ghost" onClick={() => openMeetingModal()} title="Agendar reunião no Google Calendar">
+        <button className="btn btn-ghost tb-hide-mobile" onClick={() => openMeetingModal()} title="Agendar reunião no Google Calendar">
           <span style={{ fontSize: 13 }}>📅</span>
           Reunião
         </button>
         {canEdit && (
           <>
-            <button className="btn btn-ghost" onClick={() => openCol()}>
+            <button className="btn btn-ghost tb-hide-mobile" onClick={() => openCol()}>
               <ColumnIcon />
               Coluna
             </button>
